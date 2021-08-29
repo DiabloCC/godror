@@ -286,7 +286,8 @@ func (d *drv) init(configDir, libDir string) error {
 		return nil
 	}
 	ctxParams := new(C.dpiContextCreateParams)
-	ctxParams.defaultDriverName, ctxParams.defaultEncoding = cDriverName, cUTF8
+	//ctxParams.defaultDriverName, ctxParams.defaultEncoding = cDriverName, cUTF8
+	ctxParams.defaultDriverName, ctxParams.defaultEncoding = cDriverName, getNlsCharset()
 	if !(configDir == "" && libDir == "") {
 		if configDir != "" {
 			ctxParams.oracleClientConfigDir = C.CString(configDir)
@@ -347,8 +348,10 @@ func (d *drv) initCommonCreateParams(P *C.dpiCommonCreateParams, enableEvents bo
 	}
 
 	// assign encoding and national encoding (always use UTF-8)
-	P.encoding = cUTF8
-	P.nencoding = cUTF8
+	//P.encoding = cUTF8
+	//P.nencoding = cUTF8
+	P.encoding = getNlsCharset()
+	P.nencoding = P.encoding
 
 	// assign driver name
 	P.driverName = cDriverName
