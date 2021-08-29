@@ -1210,3 +1210,20 @@ func nvlD(a, b time.Duration) time.Duration {
 	}
 	return a
 }
+
+//从环境变量加载客户端字符集设置
+func getNlsCharset() *C.char {
+	charset, ex := os.LookupEnv("NLS_LANG")
+	if !ex {
+		charset = ""
+	}
+	charset = strings.ToUpper(strings.Trim(charset, " "))
+	if charset == "" {
+		return cUTF8
+	}
+	pos := strings.Index(charset, ".")
+	charset = string(charset[pos+1:])
+	//fmt.Printf("NLS_LANG charset=%s\n", charset)
+	return C.CString(charset)
+}
+
