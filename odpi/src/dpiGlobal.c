@@ -118,6 +118,17 @@ static int dpiGlobal__extendedInitialize(dpiContextCreateParams *params,
     if (dpiOci__envNlsCreate(&dpiGlobalEnvHandle, DPI_OCI_THREADED,
             DPI_CHARSET_ID_UTF8, DPI_CHARSET_ID_UTF8, error) < 0)
         return DPI_FAILURE;
+    
+    uint16_t charId;
+    
+    if (params->defaultEncoding && dpiGlobal__lookupCharSet(params->defaultEncoding,
+                &charId, error) < 0)
+            return DPI_FAILURE;
+    dpiOci__handleFree(dpiGlobalEnvHandle, DPI_OCI_HTYPE_ENV);
+    
+    if (dpiOci__envNlsCreate(&dpiGlobalEnvHandle, DPI_OCI_THREADED,
+            charId, charId, error) < 0)
+        return DPI_FAILURE;
 
     // create global error handle
     if (dpiOci__handleAlloc(dpiGlobalEnvHandle, &dpiGlobalErrorHandle,
