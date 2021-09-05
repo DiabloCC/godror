@@ -1,4 +1,4 @@
-module github.com/godror/godror
+module github.com/diablocc/godror
 
 go 1.14
 
